@@ -8,6 +8,7 @@
   - [Inspiration](#inspiration)
   - [Go Further](#go-further)
   - [Resource List](#resource-list)
+  - [License](#license)
 
 
 ## For Who?
@@ -77,3 +78,8 @@ If you are interested in, you can add more stuff to this project, save your vers
 
 ## Resource List
 
+## License
+
+MIT License
+
+Copyright (c) 2019 Guochao Xie
