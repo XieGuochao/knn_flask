@@ -1,0 +1,12 @@
+{
+    "ip": "",
+    "username": "",
+    "ssh-password": "",
+    "db-password": "",
+    "db":"",
+    "suffix": "YOUR_STUDENT_ID",
+    "test-suffix": "YOUR_STUDENT_ID_test",
+    "data-dir": "dataset",
+    "data-width": 10,
+    "default-k": 3
+}

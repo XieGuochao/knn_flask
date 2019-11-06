@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <style type="text/css"> 
+        body
+        {
+        font-size:70%;
+        font-family:verdana,helvetica,arial,sans-serif;
+        }
+        </style>
+
+    <script type="text/javascript"> 
+    var penOn = false;
+
+    function cnvs_penOn(){
+        // console.log("down")
+        penOn = true;
+    }
+
+    function cnvs_getCoordinates(e)
+    {
+        // console.log("move");
+        x=e.clientX-30;
+        y=e.clientY-40;
+        // console.log(x, y);
+        if (penOn){
+        var c = document.getElementById("coordiv");
+        var hb=c.getContext("2d");
+        hb.beginPath();
+        var A=Array(x,y);
+        hb.lineWidth=1;
+        DrawP(hb,A);
+        hb.stroke(); 
+        // hb.endPath();
+    }
+    }
+
+    function DrawP(Canvas,P)
+    {
+        with (Canvas)
+        {
+        // moveTo(P[0],P[1]);
+        // lineTo(P[0]+1,P[1]);
+        // lineTo(P[0]+1,P[1]+1);
+        // lineTo(P[0], P[1]+1);
+            beginPath();
+            arc(P[0], P[1], 24, 0, Math.PI*2, true);
+            closePath();
+            fill();
+        }
+    }
+
+    function cnvs_penUp()
+    {
+        // console.log("up")
+        penOn = false;
+    }
+
+    function finish(e){
+        // console.log("onclick")
+        var c = document.getElementById("coordiv")
+        var strDataURI = c.toDataURL();
+        
+        // console.log(strDataURI)
+        var a = document.getElementById('a')
+        a.value = strDataURI;
+        // console.log(a)
+    }
+
+    </script>
+    </head>
+
+    <body style="margin:10px 30px; width: 300px;">
+    <h2>你好，knn识别数字了解一下</h1>
+    <div style="position: absolute; top:40px; left: 30px; background-color: transparent; height: 320px; width: 320px; z-index: 10;" onmousedown="cnvs_penOn()" onmousemove="cnvs_getCoordinates(event)" onmouseup="cnvs_penUp()" onmouseout="cnvs_penUp()"  >
+    </div>
+    <canvas id="coordiv" width="320" height="320" style="border:1px solid #c3c3c3; position: absolute; top:40px; left: 30px;" ></canvas>
+
+    <div style="margin: 360px 0;">
+    <p>Tips: 放大画图，刷新清除</p>
+    <form action="/add" method="post">
+        <input type="text" id="a" name="a" hidden="true">
+        <input type="submit" value="查看结果" onclick="finish()">
+    </form>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>kNN Digit Recognition (Flask)</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="display-4">kNN Digit Recognition (Flask)</h1>
+      <p class="bd-lead">
+        This project is a practice for ERG3010 Fall 2019. Made by <a href="https://github.com/XieGuochao">Guochao Xie</a>.
+      </p>
+      <p class="bd-lead">
+          The Source Code is available on <a href="https://github.com/XieGuochao">GitHub</a>. If you enjoy it, <em style="color:red">♥</em> it and follow me!
+        </p>
+      <form onsubmit="return finish();" >
+        <canvas
+          id="coordiv"
+          width="320"
+          height="320"
+          style="border:1px solid #c3c3c3;"
+          onmousedown="cnvs_penOn()"
+          onmousemove="cnvs_getCoordinates(event)"
+          onmouseup="cnvs_penUp()"
+          onmouseout="cnvs_penUp()"
+        ></canvas>
+        <br></br>
+          <input class="btn btn-primary" type="submit" value="Submit" />
+          <input class="btn btn-secondary" type="button" onclick="clear_canvas();" value="Clear" />
+      </form>
+
+      <div id="result_div" class="container" hidden>
+        <div class="alert alert-primary" role="alert">
+          <p id="predict_value"></p>
+        </div>
+
+        <form id="actual_value_form" onsubmit="return update_actual_value();" class="alert alert-danger" role="alert">
+          <p>Actual Digit is:</p>
+          <input type="text" name="actual_digit" />
+          <input class="btn btn-primary" type="submit" value="Update Actual Digit"/>
+        </form>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var penOn = false;
+      var width = 320;
+      var height = 320;
+      var sample_width = 10;
+      var sample_height = 10;
+      var predict_value;
+      var actual_value;
+      var id = null;
+
+      function cnvs_penOn() {
+        penOn = true;
+      }
+
+      function cnvs_getCoordinates(e) {
+        x = e.layerX;
+        y = e.layerY;
+        if (penOn) {
+          var c = document.getElementById("coordiv");
+          var hb = c.getContext("2d");
+          hb.beginPath();
+          var A = Array(x, y);
+          hb.lineWidth = 1;
+          DrawP(hb, A);
+          hb.stroke();
+        }
+      }
+
+      function DrawP(Canvas, P) {
+        with (Canvas) {
+          beginPath();
+          arc(P[0], P[1], 32, 0, Math.PI * 2, true);
+          closePath();
+          fill();
+        }
+      }
+
+      function cnvs_penUp() {
+        penOn = false;
+      }
+
+      function clear_canvas() {
+        var canvas = document.getElementById("coordiv");
+        const context = canvas.getContext('2d');
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function finish(e) {
+        var c = document.getElementById("coordiv");
+        var hb = c.getContext("2d");
+        var data = hb.getImageData(0, 0, width, height).data;
+
+        var transferred_data = new Array();
+
+        var sample_rate_x = width / sample_width;
+        var sample_rate_y = height / sample_height;
+        for (var i = 0; i < height; i += sample_rate_y)
+          for (var j = 0; j < width; j += sample_rate_x) {
+            transferred_data.push(data[(i * width + j) * 4 + 3] == 255 ? 1 : 0);
+          }
+        console.log(transferred_data);
+
+        fetch("/api/predict", {
+          body: JSON.stringify({
+            data: transferred_data
+          }),
+          method: "POST",
+          headers: { "content-type": "application/json" }
+        })
+          .then(response => {
+            return response.text();
+          })
+          .then(new_id => {
+            console.log(new_id);
+            id = new_id - 0;
+            fetch("/api/result/" + new_id).then(response => response.text())
+            .then(value => {
+              predict_value = value;
+              document.getElementById("predict_value").textContent = "Predict Digit is " + predict_value;
+              document.getElementById("result_div").removeAttribute("hidden");
+            })
+          });
+
+        return false;
+      }
+
+      function update_actual_value() {
+        var form_data = document.getElementById("actual_value_form").elements;
+        actual_value = form_data["actual_digit"].value;
+        console.log(actual_value);
+
+        if (id === undefined) {
+          alert("Please wait for id first!");
+        }
+        else {
+          fetch("/api/update_actual_value", {
+            body: JSON.stringify({
+              id: id,
+              actual_value: actual_value
+            }),
+            method: "POST",
+            headers: { "content-type": "application/json" }
+          })
+          .then(response => {
+            return response.text();
+          })
+          .then(response_text => {
+            if (response_text == "OK")
+              alert("Update actual value success!");
+            else
+              alert("Update actual value fail!");
+          })
+        }
+        
+        return false;
+      }
+    </script>
+  </body>
+</html>
