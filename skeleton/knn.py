@@ -38,24 +38,29 @@ def construct_data_set():
         return []
 
     # Keep only the data with actual value
-    id_list = [item for item in id_list if item[1] is not None]
+    
+    # Task: filter out the data without actual value, because they cannot be used in the model; save the remaining id in a list
+
+
 
     data_set = []
-    for item in id_list:
-        try:
-            data_set.append((item[1], db_func.read_one_data(item[0])))
-        except Exception as e:
-            print("load data %d failed"%(item[0],))
-            print(e)
-    
+
+    # Task: try to load the data's actual value and the numpy array data, and save the result as a tuple in data_set
+    # You may use "read_one_data" function defined in db_func
+
+
+
     return data_set
 
 def generate_M(data_set):
     """Generate the M matrix from data_set, in order to calculate the MSE."""
 
     try:
-        data_set_pure = [item[1] for item in data_set]
-        data_set_pure = np.array([item[1] for item in data_set])
+        data_set_pure = None
+
+        # Task: from the data_set, you should join all numpy row vectors into a matrix data_set_pure (pure means we do not save the actual value here)
+
+
 
         return data_set_pure
 
@@ -78,8 +83,14 @@ def calculate_mse(v, M):
         print(e)
         return None
     
+    result = None
+
+    # Task: calculate the mean squared error for each row in M versus vector v. Hint: you may take advantage of Numpy's broadcast mechanism.
     # Take advantage of Numpy's broadcast mechanism: https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html
-    result = ((v-M) ** 2).mean(axis=1)
+    
+    
+
+
 
     return result
 
@@ -104,13 +115,19 @@ def predict(v, k=None, test=False):
     if len(data_set) == 0:
         most_indices = np.random.choice(np.arange(0, 10))
     else:
-        mse = calculate_mse(v, generate_M(data_set))
-        actual_value = np.array([item[0] for item in data_set])
-        min_indices = mse.argsort()[:db_func.config["default-k"]]
+        most_indices = None
+        
+        # Task: aggregate the functions you have implemented and come up with the most indices, save it as most_indices.
+        # You may follow the 6 stesp:
+        # 1. calculate the mean squared error vector
+        # 2. collect the actual_value vector from the data_set
+        # 3. get the indices with the minimal k mean squared errors
+        # 4. get the actual values with the smallest k MSE from your actual_value vector
+        # 5. count the number of indices
+        # 6. find the most indices from the count
 
-        mapped_indices = actual_value[min_indices]
-        counts = np.bincount(mapped_indices)
-        most_indices = counts.argmax()
+
+
 
     # Provide also the counts for test
     if test and len(data_set)>0:
