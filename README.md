@@ -72,8 +72,54 @@ This project still has much improvement potential:
 1. Because Python cannot serve simple requests as fast as PHP, can you separate some queries into PHP, and use __backward proxy__ (with **Apache** or **Nginx**) to connect PHP program and your Flask program? For example, for those simple database manipulation, use PHP to implement them, and leave Flask to handle only the matrix and algorithm's job with the power of __numpy__ and other packages.
 2. Can you make the frontend more beautiful?
 3. Are there any potential bugs?
+4. Can you add more features to it, such as do the statistics of the total number of predictions and the accuracy of the prediction? Can you use **PHP** to implement this part?
 
 If you are interested in, you can add more stuff to this project, save your version into another folder, and make a pull request. Hope to see other interesting ideas!
 
 ## Resource List
 
+1. Flask:
+  1. (Official Document): https://flask.palletsprojects.com/en/1.1.x/
+  2. (Chinese Version): https://dormousehole.readthedocs.io/en/latest/
+  3. (GitHub): https://github.com/pallets/flask
+2. Bootstrap (An Easy-To-Use UI Library):
+  1. (Official Website): https://getbootstrap.com
+  2. (Chinese Version): https://www.bootcss.com/
+  3. (GitHub): https://github.com/twbs/bootstrap
+3. HTML:
+  1. Guide in English:
+     1. https://developer.mozilla.org/en-US/docs/Web/HTML
+     2. https://www.w3schools.com/html/
+  2. Guide in Chinese:
+     1. https://developer.mozilla.org/zh-CN/docs/Web/HTML
+     2. https://www.runoob.com/html/html-tutorial.html
+     3. https://www.w3school.com.cn/html/index.asp
+4. CSS:
+  1. Guide in English:
+     1. https://developer.mozilla.org/en-US/docs/Web/CSS
+     2. https://www.w3schools.com/css/
+  2. Guide in Chinese:
+     1. https://developer.mozilla.org/zh-CN/docs/Web/CSS
+     2. https://www.runoob.com/css/css-tutorial.html
+5. JavaScript:
+  1.  Guide in English:
+     1. https://developer.mozilla.org/en-US/docs/Web/JavaScript
+     2. https://www.w3schools.com/js/
+  2.  Guide in Chinese:
+     1. https://developer.mozilla.org/zh-CN/docs/Web/JavaScript
+     2. https://www.runoob.com/js/js-tutorial.html
+6. React (A JavaScript Framework for Single Page Application):
+   1. English: https://reactjs.org/
+   2. Chinese: https://react.docschina.org/
+7. Ant Design (A React-Based UI Framework by Ant Financial):
+   1. http://ant.design/
+8. Vue.js (An Easy JavaScript Framework):
+   1. https://vuejs.org/index.html
+9. Element UI:
+   1.  https://element.eleme.io/#/en-US
+10. Apache HTTP Server (The default software to run PHP):
+    1.  https://httpd.apache.org/
+    2.  (Chinese Version): https://www.yiibai.com/apache_http/
+11. Nginx (A high performance HTTP Server):
+    1.  https://nginx.org/en/
+    2.  (Chinese Version): https://www.w3cschool.cn/nginx/
