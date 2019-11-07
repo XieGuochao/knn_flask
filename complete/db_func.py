@@ -104,6 +104,7 @@ def read_one_data(data_id):
 
 def insert_data(v):
     """Save a vector and insert a record in the database."""
+    
     try:
         assert(type(v) is np.ndarray)
     except:
@@ -118,7 +119,7 @@ def insert_data(v):
     # Reference: https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-usagenotes-functionality-last-insert-id.html
     
     try:
-        cur.execute("USE student;")
+        cur.execute("USE %s;"%(config['db']))
         cur.execute("INSERT INTO %s () VALUES ();"%(config["default-table"]))
         cur.execute("SELECT LAST_INSERT_ID();")
 
@@ -145,7 +146,7 @@ def update_actual_value(data_id, actual_value):
     result = None
 
     try:
-        cur.execute("USE student;")
+        cur.execute("USE %s"%(config['db']))
         cur.execute("UPDATE `%s` SET `actual value` = %d WHERE id = %d;"%(config["default-table"], actual_value, data_id))
         conn.commit()
         print("update_actual_value succeeded")
@@ -169,7 +170,7 @@ def update_predict_value(data_id, predict_value):
     result = None
 
     try:
-        cur.execute("USE student;")
+        cur.execute("USE %s"%(config['db']))        
         cur.execute("UPDATE `%s` SET `predict value` = %d WHERE id = %d;"%(config["default-table"], predict_value, data_id))
         conn.commit()
         print("update_predict_value succeeded")
@@ -186,6 +187,9 @@ def update_predict_value(data_id, predict_value):
 
 
 def create_ssh_tunnel():
+    """Create an SSH tunnel to access the database"""
+    
+    # Reference link: https://sshtunnel.readthedocs.io/en/latest/
     tunnel = SSHTunnelForwarder(
         (config['ip'], 22),
         ssh_username=config['username'],
@@ -203,7 +207,7 @@ def create_db_conn():
     
     # Using SSH Tunnel because professor has closed the 3306 port from external access.
     tunnel = create_ssh_tunnel()
-    conn = pymysql.Connect(host='127.0.0.1',  # 此处必须是是127.0.0.1
+    conn = pymysql.Connect(host='127.0.0.1',
                             port=tunnel.local_bind_port,
                             user=config['username'],
                             passwd=config['db-password'])
@@ -211,6 +215,7 @@ def create_db_conn():
 
 def check_table(table_name = None):
     """Check if the table exist."""
+
     if table_name is None:
         table_name = config["default-table"]
 
@@ -271,6 +276,7 @@ def setup_table(table_name = None, reconstruct = False):
         cur.execute("""
             SHOW TABLES;
             """)
+        conn.commit()
         
         all_tables = cur.fetchall()
         assert((table_name,) in all_tables)

@@ -46,8 +46,13 @@ def read_db_list(tablename = None):
 
     try:
         cur = conn.cursor()
-        cur.execute("USE %s"%(config['db']))
-        cur.execute("SELECT * FROM %s;"%(tablename,))
+        
+        # Task: need to execute 2 SQL queries: 
+        # 1. Use the database in config
+        # 2. Select everything from the tablename
+
+
+
         conn.commit()
         result = cur.fetchall()
 
@@ -72,8 +77,13 @@ def read_db_one(id, tablename = None):
 
     try:
         cur = conn.cursor()
-        cur.execute("USE %s"%(config['db']))
-        cur.execute("SELECT * FROM %s WHERE id = %d;"%(tablename,id))
+
+        # Task: need to execute 2 SQL queries:
+        # 1. Use the database in config
+        # 2. Select everything with the specific id from the table tablename
+
+
+
         conn.commit()
         result = cur.fetchone()
         if len(result) == 0:
@@ -94,7 +104,15 @@ def read_one_data(data_id):
     read_data = None
 
     try:
-        read_data = np.load(path.join(config["data-dir"], "{}.npy".format(data_id)))
+        # Task: load the data from data directory with the specific data_id
+        # You may need to use the following 2 functions:
+        # 1. np.load
+        # 2. path.join
+
+
+
+        pass
+
     except Exception as e:
         print("read_one_data failed: {}", data_id)
         print(e)
@@ -104,6 +122,7 @@ def read_one_data(data_id):
 
 def insert_data(v):
     """Save a vector and insert a record in the database."""
+    
     try:
         assert(type(v) is np.ndarray)
     except:
@@ -118,15 +137,24 @@ def insert_data(v):
     # Reference: https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-usagenotes-functionality-last-insert-id.html
     
     try:
-        cur.execute("USE student;")
-        cur.execute("INSERT INTO %s () VALUES ();"%(config["default-table"]))
-        cur.execute("SELECT LAST_INSERT_ID();")
+        # Task: need to execute 3 SQL queries:
+        # 1. use the database in config
+        # 2. insert a null record into the default table
+        # 3. select the last id we have inserted; you may go to the reference link for more information
+
+
 
         conn.commit()
         last_id = cur.fetchone()[0]
         print("last_id:", last_id)
 
-        np.save(path.join(config["data-dir"], str(last_id)), v)
+        # Task: save the vector v into a file in data directory with the name using the last id we have inserted
+        # You may need to use the following 2 functions:
+        # 1. np.save
+        # 2. path.join
+
+
+
 
     except Exception as e:
         print("insert_data failed")
@@ -145,8 +173,12 @@ def update_actual_value(data_id, actual_value):
     result = None
 
     try:
-        cur.execute("USE student;")
-        cur.execute("UPDATE `%s` SET `actual value` = %d WHERE id = %d;"%(config["default-table"], actual_value, data_id))
+        # Task: you need to execute the following 2 SQL queries:
+        # 1. use the database in config
+        # 2. update the actual value in the table with the specific data_id
+
+
+
         conn.commit()
         print("update_actual_value succeeded")
         result = True
@@ -169,8 +201,12 @@ def update_predict_value(data_id, predict_value):
     result = None
 
     try:
-        cur.execute("USE student;")
-        cur.execute("UPDATE `%s` SET `predict value` = %d WHERE id = %d;"%(config["default-table"], predict_value, data_id))
+        # Task: you need to execute the following 2 SQL queries:
+        # 1. use the database in config
+        # 2. update the predict value in the table with the specific data_id
+
+
+
         conn.commit()
         print("update_predict_value succeeded")
         result = True
@@ -186,6 +222,9 @@ def update_predict_value(data_id, predict_value):
 
 
 def create_ssh_tunnel():
+    """Create an SSH tunnel to access the database"""
+    
+    # Reference link: https://sshtunnel.readthedocs.io/en/latest/
     tunnel = SSHTunnelForwarder(
         (config['ip'], 22),
         ssh_username=config['username'],
@@ -203,7 +242,7 @@ def create_db_conn():
     
     # Using SSH Tunnel because professor has closed the 3306 port from external access.
     tunnel = create_ssh_tunnel()
-    conn = pymysql.Connect(host='127.0.0.1',  # 此处必须是是127.0.0.1
+    conn = pymysql.Connect(host='127.0.0.1',
                             port=tunnel.local_bind_port,
                             user=config['username'],
                             passwd=config['db-password'])
@@ -211,6 +250,7 @@ def create_db_conn():
 
 def check_table(table_name = None):
     """Check if the table exist."""
+
     if table_name is None:
         table_name = config["default-table"]
 
@@ -220,19 +260,17 @@ def check_table(table_name = None):
 
     try:
         cur = conn.cursor()
-        cur.execute("""
-            USE %s
-            """%(config['db'], ))
 
-        cur.execute("""
-            SHOW TABLES;
-            """)
+        # Task: check the existing of a table.
+        # One possible way:
+        # 1. use the table in config
+        # 2. show tables
+        # 3. fetch all the results and see if the table_name is in the results
+        # You may come up with other solutions!
+        # You should save your result (True / False) into "result"
         
-        all_tables = cur.fetchall()
-        if (table_name,) in all_tables:
-            result = True
-        else:
-            result = False
+
+        
     except Exception as e:
         print("check_table FAILED")
         print(e)
@@ -251,26 +289,24 @@ def setup_table(table_name = None, reconstruct = False):
     conn, tunnel = create_db_conn()
     try:
         cur = conn.cursor()
-        cur.execute("""
-            USE %s
-            """%(config['db'], ))
 
-        if reconstruct:
-            cur.execute("""
-                DROP TABLE IF EXISTS `%s`;
-                """%(table_name,))
-            cur.execute("""CREATE TABLE `%s` (
-                    `id` INT UNSIGNED AUTO_INCREMENT,
-                    `actual value` INT UNSIGNED,
-                    `predict value` INT UNSIGNED,
-                    PRIMARY KEY(`id`)
-                )
-                ;"""%(table_name,))
-            conn.commit()
+        # Task: you should first use the database in the config
 
+
+
+        # Task: if reconstruct is True, you should drop the table and create a table with the following attributes:
+        # 1. id INT UNSIGNED AUTO_INCREMENT (Question: what is the usage of auto_increment?)
+        # 2. `actual value` INT UNSIGNED
+        # 3. `predict value` INT UNSIGNED
+        # 4. PRIMARY KEY(`id`)
+
+
+
+        # The following shows a way to test if the table has been created successfully.
         cur.execute("""
             SHOW TABLES;
             """)
+        conn.commit()
         
         all_tables = cur.fetchall()
         assert((table_name,) in all_tables)
