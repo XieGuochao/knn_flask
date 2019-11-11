@@ -33,7 +33,7 @@ For the complete version, it is already available to run:
 
 Then, you can go to browser and enter url: `http://localhost:5000`.
 
-To terminate it, use `Ctrl + C` on terminal. To restart it, run `$python app.py$ again.
+To terminate it, use `Ctrl + C` on terminal. To restart it, run `$python app.py` again.
 
 ### Skeleton Version
 
