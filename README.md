@@ -57,6 +57,8 @@ Moreover, the frontend for the skeleton version is very simple. You may take adv
 
 If you stuck in somewhere, you may go to the complete version and see the sample code.
 
+**Note: After you execute test.py, you need to copy the data from dataset_original to dataset before you run app.py. This will be fixed soon.**
+
 **Enjoy it!**
 
 ## Inspiration
