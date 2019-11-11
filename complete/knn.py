@@ -105,12 +105,16 @@ def predict(v, k=None, test=False):
         most_indices = np.random.choice(np.arange(0, 10))
     else:
         mse = calculate_mse(v, generate_M(data_set))
-        actual_value = np.array([item[0] for item in data_set])
-        min_indices = mse.argsort()[:db_func.config["default-k"]]
+        
+        if mse is None:
+            most_indices = np.random.choice(np.arange(0, 10))
+        else:
+            actual_value = np.array([item[0] for item in data_set])
+            min_indices = mse.argsort()[:db_func.config["default-k"]]
 
-        mapped_indices = actual_value[min_indices]
-        counts = np.bincount(mapped_indices)
-        most_indices = counts.argmax()
+            mapped_indices = actual_value[min_indices]
+            counts = np.bincount(mapped_indices)
+            most_indices = counts.argmax()
 
     # Provide also the counts for test
     if test and len(data_set)>0:
