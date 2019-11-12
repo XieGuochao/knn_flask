@@ -26,6 +26,7 @@ def load_config(test = False, config_file = "config.json"):
             config["default-suffix"] = config["test-suffix"]
             config["default-table"] = "knn_"+config['test-suffix']
             config["data-width"] = 3
+            config["data-dir"] += "_test"
         else:
             config["default-suffix"] = config["suffix"]
             config["default-table"] = "knn_" + config["suffix"]
