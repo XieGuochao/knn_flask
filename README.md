@@ -49,7 +49,7 @@ Then, you should implement functions in `db_func.py` first.
 
 After you implement them, run `$python test.py` and some tests will be PASSED!
 
-After implementing `db_func.py`, you should implement `knn.py` now. You can also check your progress by running `$python test.py$.
+After implementing `db_func.py`, you should implement `knn.py` now. You can also check your progress by running `$python test.py`.
 
 If you have passed all the tests, you can now start to code your Flask app. For this part, the test is not provided. You can test it using `print` and `console.log()` and taking advantage of your browser's development tool.
 
